@@ -22,9 +22,8 @@ public class EmployeeService {
 
     public int createEmployee(EmployeeSetterDto employeeDto) {
 
-        validationService.validateEmployeeData(employeeDto,-1);
+        validateEmployeeData(employeeDto,-1);
 
-//        validate();
         Employee employee = new Employee();
         modelMapper.map(employeeDto,employee);
         employee = employeeRepo.save(employee);
@@ -40,7 +39,7 @@ public class EmployeeService {
         if(optionalEmployee.isPresent()) {
             employee = optionalEmployee.get();
             employeeDto = new EmployeeGetterDto();
-//spring mapper
+
             modelMapper.map(employee,employeeDto);
 
         } else {
@@ -50,7 +49,7 @@ public class EmployeeService {
     }
 
     public int updateEmployee(EmployeeSetterDto employeeDto, int id) {
-        validationService.validateEmployeeData(employeeDto,id);
+        validateEmployeeData(employeeDto,id);
         Employee employee;
         Optional<Employee> optionalEmployee = employeeRepo.findById(id);
         if(optionalEmployee.isPresent()) {
@@ -75,23 +74,19 @@ public class EmployeeService {
         }
     }
 
-    void validate() {
-        throw new RuntimeException();
+    void validateEmployeeData(EmployeeSetterDto employeeDto, int id) {
+        if(!validationService.isNameUnique(employeeDto.getName(),id)) {
+            throw new RuntimeException("Employee name: " + employeeDto.getName()+" is duplicated!");
+        }
+        if(!validationService.isAgeValid(employeeDto.getAge())) {
+            throw new RuntimeException("Employee age: "+ employeeDto.getAge()+" must be between 20 and 50!");
+        }
+        if(!validationService.isEmail(employeeDto.getEmail())) {
+            throw new RuntimeException("Employee email:"+ employeeDto.getEmail()+" must be in email format!");
+        }
+        if(!validationService.isEmailUnique(employeeDto.getEmail(),id)) {
+            throw new RuntimeException("Employee email:" + employeeDto.getEmail()+" is duplicated");
+        }
     }
-
-//    void validateEmployeeData(EmployeeSetterDto employeeDto, int id) {
-//        if(!validationService.isNameUnique(employeeDto.getName(),id)) {
-//            throw new RuntimeException("Employee name: " + employeeDto.getName()+" is duplicated!");
-//        }
-//        if(!validationService.isAgeValid(employeeDto.getAge())) {
-//            throw new RuntimeException("Employee age: "+ employeeDto.getAge()+" must be between 20 and 50!");
-//        }
-//        if(!validationService.isEmail(employeeDto.getEmail())) {
-//            throw new RuntimeException("Employee email:"+ employeeDto.getEmail()+" must be in email format!");
-//        }
-//        if(!validationService.isEmailUnique(employeeDto.getEmail(),id)) {
-//            throw new RuntimeException("Employee email:" + employeeDto.getEmail()+" is duplicated");
-//        }
-//    }
 
 }

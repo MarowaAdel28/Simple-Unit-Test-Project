@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
@@ -26,11 +27,9 @@ public class EmployeeServiceTest {
     @Mock
     ValidationService validationServiceMock;
 
+    @Spy
     @InjectMocks
     EmployeeService employeeService;
-
-    @Mock
-    EmployeeService employeeServiceMock;
 
     @Test
     void get_employee_successfully() {
@@ -71,10 +70,7 @@ public class EmployeeServiceTest {
 
         doReturn(employee).when(employeeRepoMock).save(any(Employee.class));
 
-//        doNothing().when(employeeServiceMock).validate();
-
-
-        doNothing().when(validationServiceMock).validateEmployeeData(employeeSetterDto,-1);
+//        doNothing().when(employeeService).validateEmployeeData(employeeSetterDto,-1);
 
         assertEquals(employeeService.createEmployee(employeeSetterDto),1);
     }
@@ -92,7 +88,7 @@ public class EmployeeServiceTest {
 
         doReturn(employee).when(employeeRepoMock).save(any(Employee.class));
 
-        doNothing().when(validationServiceMock).validateEmployeeData(employeeSetterDto,1);
+        doNothing().when(employeeService).validateEmployeeData(employeeSetterDto,1);
 
         assertEquals(employeeService.updateEmployee(employeeSetterDto,1),1);
     }
@@ -100,7 +96,10 @@ public class EmployeeServiceTest {
     @Test
     void throw_exception_when_update_not_existing_employee() {
 
+        doNothing().when(employeeService).validateEmployeeData(new EmployeeSetterDto(),-1);
+
         doReturn(Optional.empty()).when(employeeRepoMock).findById(anyInt());
+
 
         assertThrows(RuntimeException.class,()->
                 employeeService.updateEmployee(new EmployeeSetterDto(),1),"Employee with id: 1 NOT FOUND!!!");

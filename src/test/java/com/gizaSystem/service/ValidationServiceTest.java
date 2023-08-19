@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -21,11 +22,9 @@ public class ValidationServiceTest {
     @Mock
     EmployeeRepo employeeRepoMock;
 
-    @Spy
+//    @Spy
     @InjectMocks
     ValidationService validationService;
-
-//    ValidationService validationServiceMock;
 
     @Test
     void email_is_in_email_format() {
@@ -78,6 +77,7 @@ public class ValidationServiceTest {
     void name_is_unique_employee_null() {
 
         doReturn(5).when(validationService).sum(1,2);
+//        when(validationService.sum(1,2)).thenReturn(5);
         doReturn(null).when(employeeRepoMock).findByNameIgnoreCase(anyString());
 
         assertTrue(validationService.isNameUnique("marwa",-1));
@@ -91,9 +91,9 @@ public class ValidationServiceTest {
 
         doReturn(employee).when(employeeRepoMock).findByNameIgnoreCase(anyString());
 
-//        assertTrue(validationService.isNameUnique("ali",10));
+        assertTrue(validationService.isNameUnique("ali",10));
 
-        assertEquals(true,validationService.isNameUnique("marwa",10));
+//        assertEquals(true,validationService.isNameUnique("marwa",10));
 
     }
 
