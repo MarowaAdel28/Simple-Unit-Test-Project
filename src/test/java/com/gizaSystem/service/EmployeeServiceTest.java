@@ -64,13 +64,13 @@ public class EmployeeServiceTest {
 
         Employee employee = new Employee(1);
 
-        EmployeeSetterDto employeeSetterDto = new EmployeeSetterDto();
+        EmployeeSetterDto employeeSetterDto = new EmployeeSetterDto("marwa","marwa@",24,1000);
 
 //        when(employeeRepoMock.save(any(Employee.class))).thenReturn(employee);
 
         doReturn(employee).when(employeeRepoMock).save(any(Employee.class));
 
-//        doNothing().when(employeeService).validateEmployeeData(employeeSetterDto,-1);
+        doNothing().when(employeeService).validateEmployeeData(employeeSetterDto,-1);
 
         assertEquals(employeeService.createEmployee(employeeSetterDto),1);
     }
@@ -80,7 +80,8 @@ public class EmployeeServiceTest {
 
         Employee employee = new Employee(1);
 
-        EmployeeSetterDto employeeSetterDto = new EmployeeSetterDto();
+//        EmployeeSetterDto employeeSetterDto = new EmployeeSetterDto();
+        EmployeeSetterDto employeeSetterDto = new EmployeeSetterDto("marwa","marwa@",24,1000);
 
         doReturn(Optional.of(employee)).when(employeeRepoMock).findById(anyInt());
 
@@ -96,13 +97,15 @@ public class EmployeeServiceTest {
     @Test
     void throw_exception_when_update_not_existing_employee() {
 
-        doNothing().when(employeeService).validateEmployeeData(new EmployeeSetterDto(),-1);
+        EmployeeSetterDto employeeSetterDto = new EmployeeSetterDto("marwa","marwa@",24,1000);
+
+        doNothing().when(employeeService).validateEmployeeData(any(EmployeeSetterDto.class),anyInt());
 
         doReturn(Optional.empty()).when(employeeRepoMock).findById(anyInt());
 
 
         assertThrows(RuntimeException.class,()->
-                employeeService.updateEmployee(new EmployeeSetterDto(),1),"Employee with id: 1 NOT FOUND!!!");
+                employeeService.updateEmployee(employeeSetterDto,1),"Employee with id: 1 NOT FOUND!!!");
 
     }
 

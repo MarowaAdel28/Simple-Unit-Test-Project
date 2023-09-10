@@ -22,7 +22,7 @@ public class ValidationServiceTest {
     @Mock
     EmployeeRepo employeeRepoMock;
 
-//    @Spy
+    @Spy
     @InjectMocks
     ValidationService validationService;
 
